@@ -28,6 +28,11 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>com.geoideas</groupId>
+            <artifactId>eventx-shared</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
         </dependency>
@@ -96,7 +101,6 @@
                     <config>src/main/resources/config/config.json</config>
                     <runArgs>
                         <runArg>-cluster</runArg>
-                        <runArg>-instances 10</runArg>
                     </runArgs>
                 </configuration>
             </plugin>
