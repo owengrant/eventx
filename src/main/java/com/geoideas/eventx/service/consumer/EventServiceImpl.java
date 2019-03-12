@@ -1,7 +1,16 @@
 package com.geoideas.eventx.service.consumer;
 
 import com.geoideas.eventx.service.publisher.PublisherVerticle;
-import io.pet.spooch.event.shared.dto.EventDTO;
+import com.geoideas.eventx.shared.EventDTO;;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.ReplyException;
+import io.vertx.serviceproxy.ServiceException;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -23,8 +32,10 @@ public class EventServiceImpl implements EventService{
     }
 
     public void handle(AsyncResult<Message<JsonArray>> result, JsonObject event,Handler<AsyncResult<JsonArray>> complete){
-        if(result.failed())
-            complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,EventService.PUBLISH_ERROR_MESSAGE,event));
+        if(result.failed()){
+            var rEx = (ReplyException) result.cause();
+            complete.handle(ServiceException.fail(rEx.failureCode(),rEx.getMessage(),event));
+        }    
         else
           complete.handle(Future.future(h -> h.complete(result.result().body())));
     }
@@ -39,7 +50,7 @@ public class EventServiceImpl implements EventService{
         //authentication and authorization
         vertx.eventBus().<JsonObject>send(address+PublisherVerticle.PUBLISH, event , result -> {
             if(result.failed())
-                complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,EventService.PUBLISH_ERROR_MESSAGE, event));
+                complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,result.cause().getMessage(), event));
             else
                 complete.handle(Future.future(h -> h.complete(result.result().body())));
         });
@@ -51,7 +62,7 @@ public class EventServiceImpl implements EventService{
         var query = new JsonObject().put("newEvent",newEvent).put("oldEvent",oldEvent);
         vertx.eventBus().<JsonObject>send(address+PublisherVerticle.PUBLISH_OCC, query , result -> {
             if(result.failed())
-                complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,EventService.PUBLISH_ERROR_MESSAGE, query));
+                complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,result.cause().getMessage(), query));
             else
                 complete.handle(Future.future(h -> h.complete(result.result().body())));
         });

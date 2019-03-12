@@ -1,6 +1,6 @@
 package com.geoideas.eventx.service.publisher.database.dao;
 
-import io.pet.spooch.event.shared.dto.EventDTO;
+import com.geoideas.eventx.shared.EventDTO;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
