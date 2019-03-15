@@ -1,6 +1,6 @@
 {
-  "database": {"host": "localhost","port": 5432,"database": "spooch_eventstore","username": "spooch","password": "spooch"},
-  "address": "service:spooch-event", 
+  "database": {"host": "localhost","port": 5432,"database": "eventx","username": "eventx","password": "eventx"},
+  "address": "service:com.geoideas.eventx", 
   "bridge":  {"host": "localhost", "port": 30000},
   "events": ["USERCREATED","EVENTCREATED","COMMENTMADE","EVENTTAGGED"]
 }
