@@ -1,5 +1,5 @@
 {
-  "database": {"host": "localhost","port": 5432,"database": "eventx","username": "eventx","password": "eventx"},
+  "database": {"host": "localhost","port": 5432,"database": "eventx","username": "spooch","password": "spooch"},
   "address": "service:com.geoideas.eventx", 
   "bridge":  {"host": "localhost", "port": 30000},
   "events": ["USERCREATED","EVENTCREATED","COMMENTMADE","EVENTTAGGED"]
