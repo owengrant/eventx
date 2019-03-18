@@ -28,7 +28,8 @@ public interface EventService {
     void pollEvent(int eventId, String event, Handler<AsyncResult<JsonArray>> complete);
     void pollEntity(int eventId, String entity, Handler<AsyncResult<JsonArray>> complete);
     void pollEntityEvent(int eventId, String entity, String event, Handler<AsyncResult<JsonArray>> complete);
-    void pollEntityById(int entityId, String entity, Handler<AsyncResult<JsonArray>> complete);
-    void findLastEvent(int entityId, String entity, Handler<AsyncResult<JsonArray>> complete);
+    void pollEntityById(String entityId, String entity, Handler<AsyncResult<JsonArray>> complete);
+    void pollContext(int eventId, String context, Handler<AsyncResult<JsonArray>> complete);
+    void findLastEvent(String entityId, String entity, Handler<AsyncResult<JsonArray>> complete);
     void find(String hash, Handler<AsyncResult<JsonArray>> complete);
 }

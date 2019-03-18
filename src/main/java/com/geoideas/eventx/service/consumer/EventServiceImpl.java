@@ -1,7 +1,7 @@
 package com.geoideas.eventx.service.consumer;
 
 import com.geoideas.eventx.service.publisher.PublisherVerticle;
-import com.geoideas.eventx.shared.EventDTO;;
+import com.geoideas.eventx.shared.EventDTO;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -102,7 +102,7 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
-    public void pollEntityById(int entityId, String entity, Handler<AsyncResult<JsonArray>> complete) {
+    public void pollEntityById(String entityId, String entity, Handler<AsyncResult<JsonArray>> complete) {
         var data = new EventDTO();
         data.setEntityId(entityId);
         data.setEntity(entity);
@@ -110,7 +110,12 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
-    public void findLastEvent(int entityId, String entity, Handler<AsyncResult<JsonArray>> complete) {
+    public void pollContext(int eventId, String context, Handler<AsyncResult<JsonArray>> complete) {
+        query(PublisherVerticle.POLL_CONTEXT, new EventDTO().setEventId(eventId).setContext(context), complete);
+    }
+
+    @Override
+    public void findLastEvent(String entityId, String entity, Handler<AsyncResult<JsonArray>> complete) {
         var data = new EventDTO();
         data.setEntityId(entityId);
         data.setEntity(entity);
