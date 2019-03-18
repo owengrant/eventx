@@ -7,11 +7,12 @@ public class ConsumerVerticle extends AbstractVerticle {
     @Override
     public void start() {
         setup();
-        System.out.println("SPOOCH EVENT STORE CONSUMER SERVICE RUNNING");
+        System.out.println("EVENTX CONSUMER SERVICE RUNNING");
     }
 
     public void setup(){
-        var service = EventService.create(vertx,config().getString("address"));
-        new ServiceBinder(vertx).setAddress("service:spooch-event").register(EventService.class, service);
+        var address = config().getString("address");
+        var service = EventService.create(vertx, address);
+        new ServiceBinder(vertx).setAddress(address).register(EventService.class, service);
     }
 }
