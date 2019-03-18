@@ -17,9 +17,9 @@ public final class Gateway extends AbstractVerticle {
     public void start() {
         setup();
         bridgeEventbus();
-        System.out.println("SPOOCH EVENT STORE SERVICE RUNNING");
+        System.out.println("EVENTX SERVICE RUNNING");
     }
-
+    
     public void setup(){
         var service = EventService.create(vertx,config().getString("address"));
         new ServiceBinder(vertx).setAddress("service:spooch-event").register(EventService.class, service);
@@ -42,7 +42,7 @@ public final class Gateway extends AbstractVerticle {
              .listen(
                      serverConfig.getInteger("port"),
                      serverConfig.getString("host"),
-                     hndlr -> System.out.println(hndlr.succeeded() ? "EVENTBUS BRIDGE INTEGRATION RUNNING" : "FAIL TO OPEN EVENTBUS BRIDGE")
+                     hndlr -> System.out.println(hndlr.succeeded() ? "EVENTX EVENTBUS BRIDGE INTEGRATION RUNNING" : "FAIL TO OPEN EVENTBUS BRIDGE")
              );
     }
 }
