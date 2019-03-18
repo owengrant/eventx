@@ -117,6 +117,14 @@ public class EventbusHandler {
         handlePoll(eDao.pollEntityById(getEvent(message)), message); 
     }
 
+    public void pollContext(Message<JsonObject> message) {
+        if(message.body() == null){
+            message.fail(Error.EVENT_CONTENT_ERROR, Error.EVENT_CONTENT_ERROR_MESSAGE);
+            return;
+        }
+        handlePoll(eDao.pollContext(getEvent(message)), message);
+    }
+
     public void findLastEvent(Message<JsonObject> message) { 
         if(message.body() == null){
             message.fail(Error.EVENT_CONTENT_ERROR, Error.EVENT_CONTENT_ERROR_MESSAGE);

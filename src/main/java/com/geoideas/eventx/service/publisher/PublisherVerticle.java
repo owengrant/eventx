@@ -14,13 +14,14 @@ public class PublisherVerticle extends AbstractVerticle {
     public static final String POLL_ENTITY = "/db/poll/entity";
     public static final String POLL_ENTITY_EVENT = "/db/poll/entity/event";
     public static final String POLL_ENTITY_BY_ID = "/db/poll/entity/id";
+    public static final String POLL_CONTEXT = "/db/poll/context";
     public static final String FIND_LAST_EVENT = "/db/poll/entity/event/last";
     public static final String FIND = "/db/poll/entity/hash";
 
     @Override
     public void start() {
         setup();
-        System.out.println("SPOOCH EVENT PUBLISHER SERVICE RUNNING");
+        System.out.println("EVENTX PUBLISHER SERVICE RUNNING");
     }
 
     public void setup(){
@@ -37,6 +38,7 @@ public class PublisherVerticle extends AbstractVerticle {
         bus.localConsumer(root+POLL_ENTITY, busHandler::pollEntity);
         bus.localConsumer(root+POLL_ENTITY_EVENT, busHandler::pollEntityEvent);
         bus.localConsumer(root+POLL_ENTITY_BY_ID, busHandler::pollEntityById);
+        bus.localConsumer(root+POLL_CONTEXT, busHandler::pollContext);
         bus.localConsumer(root+FIND_LAST_EVENT, busHandler::findLastEvent);
         bus.localConsumer(root+FIND, busHandler::find);
     }

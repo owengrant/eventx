@@ -11,14 +11,15 @@ import io.vertx.reactivex.ext.sql.SQLConnection;
 import java.util.stream.Collectors;
 
 public class EventDAO {
-    public final String APPEND = "INSERT INTO EVENT(hash,event,eventType,entity,entityId,version,data) VALUES(?,?,?,?,?,?,?::json)";
-    public final String APPEND_OCC = "INSERT INTO EVENT(hash,event,eventType,entity,entityId,version,data,revision) VALUES(?,?,?,?,?,?,?::json,?)";
+    public final String APPEND = "INSERT INTO EVENT(context,hash,event,\"eventType\",entity,\"entityId\",version,data) VALUES(?,?,?,?,?,?,?,?::json)";
+    public final String APPEND_OCC = "INSERT INTO EVENT(context,hash,event,\"eventType\",entity,\"entityId\",version,data,revision) VALUES(?,?,?,?,?,?,?,?::json,?)";
     public final String POLL = "SELECT * FROM EVENT WHERE eventId >= ?";
-    public final String POLL_EVENT = "SELECT * FROM EVENT WHERE eventId >= ? AND event = ?";
-    public final String POLL_ENTITY = "SELECT * FROM EVENT WHERE eventId >= ? AND entity = ?";
-    public final String POLL_ENTITY_EVENT = "SELECT * FROM EVENT WHERE eventId >= ? AND event = ? AND entity = ?";
-    public final String POLL_ENTITY_BY_ID = "SELECT * FROM EVENT WHERE  entityId = ? AND entity = ?";
-    public final String FIND_LAST_EVENT = "SELECT * FROM EVENT WHERE entityId = ? AND entity = ? ORDER BY eventId DESC LIMIT 1";
+    public final String POLL_EVENT = "SELECT * FROM EVENT WHERE \"eventId\" >= ? AND event = ?";
+    public final String POLL_ENTITY = "SELECT * FROM EVENT WHERE \"eventId\" >= ? AND entity = ?";
+    public final String POLL_ENTITY_EVENT = "SELECT * FROM EVENT WHERE \"eventId\" >= ? AND event = ? AND entity = ?";
+    public final String POLL_ENTITY_BY_ID = "SELECT * FROM EVENT WHERE  \"entityId\" = ? AND entity = ?";
+    public final String POLL_CONTEXT = "SELECT * FROM EVENT WHERE  \"eventId\" >= ? AND context = ?";
+    public final String FIND_LAST_EVENT = "SELECT * FROM EVENT WHERE \"entityId\" = ? AND entity = ? ORDER BY \"eventId\" DESC LIMIT 1";
     public final String FIND = "SELECT * FROM EVENT WHERE entity = ? AND hash = ?";
 
     private  SQLClient client;
@@ -54,6 +55,7 @@ public class EventDAO {
     public Single<EventDTO> append(EventDTO event, boolean occ){
         var query = APPEND;
         var params = new JsonArray()
+                     .add(event.getContext())
                      .add(event.getHash())
                      .add(event.getEvent())
                      .add(event.getEventType())
@@ -119,6 +121,13 @@ public class EventDAO {
                          .add(event.getEntityId())
                          .add(event.getEntity());
         return query(POLL_ENTITY_BY_ID, params);
+    }
+
+    public Single<JsonArray> pollContext(EventDTO event){
+        var params = new JsonArray()
+                .add(event.getEventId())
+                .add(event.getContext());
+        return query(POLL_CONTEXT, params);
     }
 
     public Single<JsonArray> findLastEvent(EventDTO event){
