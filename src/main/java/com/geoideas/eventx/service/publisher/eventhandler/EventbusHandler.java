@@ -21,6 +21,7 @@ public class EventbusHandler {
     }
     
     private void handleError(Message<JsonObject> message, Throwable e){
+        e.printStackTrace();
         handleError(message,e.getMessage());
     }
     
@@ -40,10 +41,10 @@ public class EventbusHandler {
     }
     
     private void handlePublish(Message<JsonObject> message, EventDTO event){
-        if(event.getEventId() != -1)
+        if(event != null)
             message.reply(event.toJson());
         else
-            handleError(message, "Failed possibly because: "+Error.DUPLICATE_EVENT_MESSAGE);
+            handleError(message, Error.UNKNOWN_ERROR_MESSAGE);
     }
     
     public EventDTO getEvent(Message<JsonObject> message){

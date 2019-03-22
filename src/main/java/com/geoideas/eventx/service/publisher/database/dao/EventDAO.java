@@ -7,12 +7,12 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.ResultSet;
 import io.vertx.reactivex.ext.sql.SQLClient;
 import io.vertx.reactivex.ext.sql.SQLConnection;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.stream.Collectors;
 
 public class EventDAO {
-    public final String APPEND = "INSERT INTO EVENT(context,hash,event,\"eventType\",entity,\"entityId\",version,data) VALUES(?,?,?,?,?,?,?,?::json)";
-    public final String APPEND_OCC = "INSERT INTO EVENT(context,hash,event,\"eventType\",entity,\"entityId\",version,data,revision) VALUES(?,?,?,?,?,?,?,?::json,?)";
+    public final String APPEND = "INSERT INTO EVENT(context,hash,event,\"eventType\",entity,\"entityId\",revision,version,data) VALUES(?,?,?,?,?,?,?,?,?::json)";
     public final String POLL = "SELECT * FROM EVENT WHERE eventId >= ?";
     public final String POLL_EVENT = "SELECT * FROM EVENT WHERE \"eventId\" >= ? AND event = ?";
     public final String POLL_ENTITY = "SELECT * FROM EVENT WHERE \"eventId\" >= ? AND entity = ?";
@@ -53,26 +53,22 @@ public class EventDAO {
     }
 
     public Single<EventDTO> append(EventDTO event, boolean occ){
-        var query = APPEND;
+        var hash = DigestUtils.md5Hex(event.getContext()+event.getEntity()+event.getEntityId()+event.getRevision()+event.getVersion()+event.getEvent()+event.getEventType());
         var params = new JsonArray()
                      .add(event.getContext())
-                     .add(event.getHash())
+                     .add(hash)
                      .add(event.getEvent())
                      .add(event.getEventType())
                      .add(event.getEntity())
                      .add(event.getEntityId())
+                     .add(event.getRevision())
                      .add(event.getVersion())
                      .add(event.getData().encode());
-        if(occ){
-            query = APPEND_OCC;
-            params.add(event.getRevision());
-        }
-        var query1 = query;
         return connect()
                .flatMap(con ->
-                   con.rxUpdateWithParams(query1,params)
+                   con.rxUpdateWithParams(APPEND,params)
                    .doAfterTerminate(con::close)
-               ).map(result -> result.getUpdated() == 0 ? new EventDTO() : event);
+               ).map(result -> result.getUpdated() == 0 ? null : event);
     }
 
     public Single<JsonArray> query(String sql, JsonArray params){

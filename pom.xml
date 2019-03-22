@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.geoideas</groupId>
     <artifactId>eventx</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.2</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.geoideas</groupId>
             <artifactId>eventx-shared</artifactId>
-            <version>0.11.0</version>
+            <version>0.11.5</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
@@ -79,6 +79,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.9</version>
         </dependency>
     </dependencies>
     <build>
