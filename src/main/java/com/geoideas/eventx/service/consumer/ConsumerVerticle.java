@@ -12,7 +12,7 @@ public class ConsumerVerticle extends AbstractVerticle {
 
     public void setup(){
         var address = config().getString("address");
-        var service = EventService.create(vertx, address);
+        var service = EventService.create(vertx, address, config().getJsonObject("permissions"));
         new ServiceBinder(vertx).setAddress(address).register(EventService.class, service);
     }
 }

@@ -1,18 +1,16 @@
 package com.geoideas.eventx;
 
 
-import com.geoideas.eventx.service.consumer.EventService;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
-import io.vertx.serviceproxy.ServiceBinder;
 
 
 public final class Gateway extends AbstractVerticle {
-
+    
     @Override
     public void start() {
         setup();
@@ -20,10 +18,12 @@ public final class Gateway extends AbstractVerticle {
         System.out.println("EVENTX SERVICE RUNNING");
     }
     
+    
+    
     public void setup(){
         var address = config().getString("address");
-        var service = EventService.create(vertx,address);
-        new ServiceBinder(vertx).setAddress(address).register(EventService.class, service);
+        //var service = EventService.create(vertx,address, config());
+        //new ServiceBinder(vertx).setAddress(address).register(EventService.class, service);
         var publisher = "com.geoideas.eventx.service.publisher.PublisherVerticle";
         vertx.deployVerticle(publisher, new DeploymentOptions().setConfig(config()));
         var consumer = "com.geoideas.eventx.service.consumer.ConsumerVerticle";

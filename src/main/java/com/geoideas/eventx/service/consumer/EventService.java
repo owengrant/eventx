@@ -18,8 +18,8 @@ public interface EventService {
     public static final String PUBLISH_ERROR_MESSAGE = "Failed to publish event";
 
     @GenIgnore
-    public static EventServiceImpl create(Vertx vertx, String address){
-        return new EventServiceImpl(vertx,address);
+    public static EventServiceImpl create(Vertx vertx, String address, JsonObject permissions){
+        return new EventServiceImpl(vertx, address, permissions);
     }
 
     void publish(JsonObject event, Handler<AsyncResult<JsonObject>> complete);

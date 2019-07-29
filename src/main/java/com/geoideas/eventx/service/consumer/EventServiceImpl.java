@@ -1,16 +1,9 @@
 package com.geoideas.eventx.service.consumer;
 
 import com.geoideas.eventx.service.publisher.PublisherVerticle;
+import com.geoideas.eventx.shared.Error;
 import com.geoideas.eventx.shared.EventDTO;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.ReplyException;
-import io.vertx.serviceproxy.ServiceException;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -23,18 +16,24 @@ import io.vertx.serviceproxy.ServiceException;
 public class EventServiceImpl implements EventService{
 
     private Vertx vertx;
-    private JsonObject config;
+    private JsonObject permissions;
     private String address;
 
     public EventServiceImpl(Vertx vertx, String address){
         this.address = address;
         this.vertx = vertx;
     }
+    
+    public EventServiceImpl(Vertx vertx, String address, JsonObject permissions){
+        this.address = address;
+        this.vertx = vertx;
+        this.permissions = permissions;
+    }
 
     public void handle(AsyncResult<Message<JsonArray>> result, JsonObject event,Handler<AsyncResult<JsonArray>> complete){
         if(result.failed()){
             var rEx = (ReplyException) result.cause();
-            complete.handle(ServiceException.fail(rEx.failureCode(),rEx.getMessage(),event));
+            complete.handle(ServiceException.fail(rEx.failureCode(),rEx.getMessage()));
         }    
         else
           complete.handle(Future.future(h -> h.complete(result.result().body())));
@@ -48,6 +47,11 @@ public class EventServiceImpl implements EventService{
     @Override
     public void publish(JsonObject event, Handler<AsyncResult<JsonObject>> complete) {
         //authentication and authorization
+        if(!publishAuth(event)){
+            complete.handle(ServiceException.fail(Error.UNAUTHORISED_ERROR,Error.UNAUTHORISED_ERROR_MESSAGE));
+            return;
+        }
+        var eventDTO = new EventDTO().fromJson(event);
         vertx.eventBus().<JsonObject>send(address+PublisherVerticle.PUBLISH, event , result -> {
             if(result.failed())
                 complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,result.cause().getMessage(), event));
@@ -59,6 +63,10 @@ public class EventServiceImpl implements EventService{
     @Override
     public void publishOCC(JsonObject newEvent, JsonObject oldEvent, Handler<AsyncResult<JsonObject>> complete) {
         //authentication and authorization
+        if(!publishAuth(newEvent)){
+            complete.handle(ServiceException.fail(Error.UNAUTHORISED_ERROR,Error.UNAUTHORISED_ERROR_MESSAGE));
+            return;
+        }
         var query = new JsonObject().put("newEvent",newEvent).put("oldEvent",oldEvent);
         vertx.eventBus().<JsonObject>send(address+PublisherVerticle.PUBLISH_OCC, query , result -> {
             if(result.failed())
@@ -129,5 +137,15 @@ public class EventServiceImpl implements EventService{
         query(PublisherVerticle.FIND, data, complete);
     }
 
+    private boolean publishAuth(JsonObject request) {
+        var event = new EventDTO().fromJson(request);
+        var pass = false;
+        if(permissions.containsKey(event.getEntity())) {
+            var entityPerms = permissions.getJsonObject(event.getEntity());
+            var events = entityPerms.getJsonArray("events");
+            pass = events != null && events.contains(event.getEvent());
+        }
+        return pass;
+    }
 
 }
