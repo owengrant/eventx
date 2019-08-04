@@ -1,8 +1,7 @@
 {
   "database": {"host": "localhost","port": 5432,"database": "eventx","username": "postgres","password": "postgres"},
   "serviceName": "com.geoideas.eventx",
-  "address": "service:com.geoideas.eventx", 
-  "bridge":  {"host": "192.168.1.14", "port": 30000},
+  "address": "service:com.geoideas.eventx",
   "permissions": {
         "com.geoideas.eventx.tester": {
             "events": ["TEST"]

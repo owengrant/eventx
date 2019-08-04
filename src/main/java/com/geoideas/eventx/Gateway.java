@@ -19,7 +19,6 @@ public final class Gateway extends AbstractVerticle {
     @Override
     public void start() {
         setup();
-        bridgeEventbus();
         System.out.println("EVENTX SERVICE RUNNING");
     }
     
@@ -32,7 +31,7 @@ public final class Gateway extends AbstractVerticle {
         var consumer = "com.geoideas.eventx.service.consumer.ConsumerVerticle";
         vertx.deployVerticle(consumer, new DeploymentOptions().setConfig(config()));
     }
-    
+    /*
     public void bridgeEventbus(){
         var bridge = SockJSHandler.create(vertx);
         var inbound = new PermittedOptions().setAddressRegex(config().getString("address"));
@@ -49,4 +48,5 @@ public final class Gateway extends AbstractVerticle {
                      hndlr -> System.out.println(hndlr.succeeded() ? "EVENTX EVENTBUS BRIDGE INTEGRATION RUNNING" : "FAIL TO OPEN EVENTBUS BRIDGE")
              );
     }
+    */
 }
