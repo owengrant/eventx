@@ -10,7 +10,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- vert.x properties -->
-        <vertx.version>3.6.3</vertx.version>
+        <vertx.version>3.8.0</vertx.version>
         <vertx.verticle>com.geoideas.eventx.Gateway</vertx.verticle>
         <!-- Maven plugins -->
         <vertx-maven-plugin.version>1.0.18</vertx-maven-plugin.version>
@@ -56,7 +56,6 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-sockjs-service-proxy</artifactId>
-            <version>3.6.2</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
@@ -68,6 +67,10 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-hazelcast</artifactId>
             <version>3.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-service-discovery</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
