@@ -4,7 +4,7 @@
   "address": "service:com.geoideas.eventx",
   "permissions": {
         "com.geoideas.eventx.tester": {
-            "events": ["TEST"]
+            "events": ["com.geoideas.eventx.tester:TEST"]
         }
   }
 }
