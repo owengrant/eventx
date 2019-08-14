@@ -22,6 +22,49 @@
 * ###### Poll Context - Reads all events from a given context
 * ###### Find Last Event - Finds the last event of a given entity
 
+## Examples
+
+#### Getting Service Proxy via Service Discovery
+
+	var sd = ServiceDiscovery.create(vertx)
+    sd.getRecord(rec -> rec.getName().equals("com.geoideas.eventx"), hndlr -> {
+      if(hndlr.succeeded()) {
+        EventService eventx = sd.getReference(hndlr.result()).get();
+      }
+    });
+
+#### Getting Service From Eventx-Shared Library
+
+	EventService eventx = EventService.create(vertx, "service:com.geoideas.eventx");
+
+#### Publishing Events
+
+	var event = new EventDTO()
+    	.setContext("tester.test")
+        .setEvent("add_grade")
+        .setEventType("insert")
+        .setEntity("test_1")
+        .setEntityId("1234456789qwertyuiplkjhgfdsazxcv") // at least 32 characters
+        .setData(new JsonObject())
+        .setVersion(1)
+        .setRevision(1);
+    eventx.publish(event.toJson(), hndlr -> {
+      if(hndlr.succeeded())
+      	System.out.println(hndlr.result().encode());
+    });
+	
+### Polling Events
+
+	eventx.poll(0, hndlr -> {
+    	if(hndlr.succeeded())
+        	hndlr.result().stream()
+            	.map(e -> (JsonObject)e)
+            	.map(EventDTO::fromJson)
+                .forEach(System.out::println)
+    });
+
+
+
 Permissions Management
 
 To add permissions use the following structure in the verticle configuration:
