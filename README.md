@@ -63,11 +63,40 @@
                 .forEach(System.out::println)
     });
 
+### Event Object Structure
+###### The EventDTO object can be found at https://github.com/owengrant/eventx-shared
+###### The event object sent between applications and EventX is a json with the following properties:
+* context - The name of the application as defined in the permissions (below) section of the EventX configuration.
+* event - The name of the event.
+* eventType - The type of action the event executed (INSERT, UPDATE, READ, DELETE, ETC.)
+* entity - The group name of the entity to which the event belongs.
+* entityId - The id of the specific instance of the entity to which the event belongs. Must be > 32 characters and globally unique.
+* data - A json containing the event data.
+* version - An integer indicating the structure version of the event data.
+* revision - An integer which keeps track of how many events were published to the given entityId. This helps track the changes to an instance of an entity.
+
+### EventX Configuration
+
+
+	{
+  		"database": {"host": "localhost","port": 5432,"database":"eventx","username": "postgres","password": "postgres"},
+	  	"serviceName": "com.geoideas.eventx",
+  		"address": "service:com.geoideas.eventx",
+  		"permissions": {
+        	"com.geoideas.eventx.tester": {
+            	"events": ["com.geoideas.eventx.tester:TEST"]
+       		}
+  		}
+	}
+  * database - Postgres database configurations
+  * serviceName - The name of the EventX service
+  * address - The location of the EventX service on the eventbus
+
 ### Publishing Permissions
 ##### Permissions are added to the verticle configuration
 
 	{
-  		"database": {"host": "localhost","port": 5432,"database": 	"eventx","username": 	"postgres","password": "postgres"},
+  		"database": {"host": "localhost","port": 5432,"database":"eventx","username":"postgres","password": "postgres"},
 	  	"serviceName": "com.geoideas.eventx",
   		"address": "service:com.geoideas.eventx",
   		"permissions": {
