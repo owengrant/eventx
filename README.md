@@ -58,25 +58,26 @@
 	eventx.poll(0, hndlr -> {
     	if(hndlr.succeeded())
         	hndlr.result().stream()
-            	.map(e -> (JsonObject)e)
+            	.map(e -> (JsonObject))
             	.map(EventDTO::fromJson)
                 .forEach(System.out::println)
     });
 
+### Publishing Permissions
+##### Permissions are added to the verticle configuration
 
-
-Permissions Management
-
-To add permissions use the following structure in the verticle configuration:
-
-{
-    permissions: {
-        service_name: {
-            events: [event1, event2] //events that a particular service can publish
-            services: { //coming soon
-                service_name: [event1, event2] //service and events a particular service and query
-                service_name: [event1, event2]
-            }
-        }
-    }
-}
+	{
+  		"database": {"host": "localhost","port": 5432,"database": 	"eventx","username": 	"postgres","password": "postgres"},
+	  	"serviceName": "com.geoideas.eventx",
+  		"address": "service:com.geoideas.eventx",
+  		"permissions": {
+        	"com.geoideas.eventx.tester": {
+            	"events": ["com.geoideas.eventx.tester:TEST"]
+       		}
+  		}
+	}
+* Keys of the "permissions" object represent the names of applications allowed to publish events.
+	* the "events" arrays holds the names of events which can be published by the current application.
+    
+    
+   ##### To ensure consistency and isolation of event across multiple clients the full name of the application owning the event must be prepended to the event name
