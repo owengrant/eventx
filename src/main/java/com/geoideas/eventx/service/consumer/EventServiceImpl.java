@@ -11,7 +11,7 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.Vertx;
-import io.vertx.serviceproxy.ServiceException;
+import io.vertx.core.eventbus.ReplyFailure;
 
 public class EventServiceImpl implements EventService{
 
@@ -33,7 +33,7 @@ public class EventServiceImpl implements EventService{
     public void handle(AsyncResult<Message<JsonArray>> result, JsonObject event,Handler<AsyncResult<JsonArray>> complete){
         if(result.failed()){
             var rEx = (ReplyException) result.cause();
-            complete.handle(ServiceException.fail(rEx.failureCode(),rEx.getMessage()));
+            complete.handle(fail(rEx.failureCode(),rEx.getMessage()));
         }    
         else
           complete.handle(Future.future(h -> h.complete(result.result().body())));
@@ -41,20 +41,20 @@ public class EventServiceImpl implements EventService{
 
     public  void query(String dbAddress,EventDTO event, Handler<AsyncResult<JsonArray>> complete){
         var data = event.toJson();
-        vertx.eventBus().<JsonArray>send(address+dbAddress, data , result -> handle(result,data,complete));
+        vertx.eventBus().<JsonArray>request(address+dbAddress, data , result -> handle(result,data,complete));
     }
 
     @Override
     public void publish(JsonObject event, Handler<AsyncResult<JsonObject>> complete) {
         //authentication and authorization
         if(!publishAuth(event)){
-            complete.handle(ServiceException.fail(Error.UNAUTHORISED_ERROR,Error.UNAUTHORISED_ERROR_MESSAGE));
+            complete.handle(fail(Error.UNAUTHORISED_ERROR,Error.UNAUTHORISED_ERROR_MESSAGE));
             return;
         }
         var eventDTO = new EventDTO().fromJson(event);
-        vertx.eventBus().<JsonObject>send(address+PublisherVerticle.PUBLISH, event , result -> {
+        vertx.eventBus().<JsonObject>request(address+PublisherVerticle.PUBLISH, event , result -> {
             if(result.failed())
-                complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,result.cause().getMessage(), event));
+                complete.handle(fail(EventService.PUBLISH_ERROR,result.cause().getMessage()));
             else
                 complete.handle(Future.future(h -> h.complete(result.result().body())));
         });
@@ -64,13 +64,13 @@ public class EventServiceImpl implements EventService{
     public void publishOCC(JsonObject newEvent, JsonObject oldEvent, Handler<AsyncResult<JsonObject>> complete) {
         //authentication and authorization
         if(!publishAuth(newEvent)){
-            complete.handle(ServiceException.fail(Error.UNAUTHORISED_ERROR,Error.UNAUTHORISED_ERROR_MESSAGE));
+            complete.handle(fail(Error.UNAUTHORISED_ERROR,Error.UNAUTHORISED_ERROR_MESSAGE));
             return;
         }
         var query = new JsonObject().put("newEvent",newEvent).put("oldEvent",oldEvent);
-        vertx.eventBus().<JsonObject>send(address+PublisherVerticle.PUBLISH_OCC, query , result -> {
+        vertx.eventBus().<JsonObject>request(address+PublisherVerticle.PUBLISH_OCC, query , result -> {
             if(result.failed())
-                complete.handle(ServiceException.fail(EventService.PUBLISH_ERROR,result.cause().getMessage(), query));
+                complete.handle(fail(EventService.PUBLISH_ERROR,result.cause().getMessage()));
             else
                 complete.handle(Future.future(h -> h.complete(result.result().body())));
         });
@@ -148,5 +148,8 @@ public class EventServiceImpl implements EventService{
         }
         return pass;
     }
-
+    
+    private <T> AsyncResult<T> fail(int code, String message) {
+        return Future.future( h -> h.complete((T)new ReplyException(ReplyFailure.RECIPIENT_FAILURE, code, message)));
+    }
 }
