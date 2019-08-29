@@ -68,7 +68,10 @@ public class EventDAO {
                .flatMap(con ->
                    con.rxUpdateWithParams(APPEND,params)
                    .doAfterTerminate(con::close)
-               ).map(result -> result.getUpdated() == 0 ? null : event);
+               ).map(result -> {
+                   event.setHash(hash);
+                   return result.getUpdated() == 0 ? null : event;
+                });
     }
 
     public Single<JsonArray> query(String sql, JsonArray params){
