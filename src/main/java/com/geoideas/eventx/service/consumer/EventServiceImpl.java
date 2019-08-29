@@ -138,13 +138,15 @@ public class EventServiceImpl implements EventService{
     }
 
     private boolean publishAuth(JsonObject request) {
+        System.out.println(request.encodePrettily());
         var event = new EventDTO().fromJson(request);
+        System.out.println(event.getEvent());
         var pass = false;
         var context = event.getContext();
         if(permissions.containsKey(context)) {
             var contextPerms = permissions.getJsonObject(context);
             var events = contextPerms.getJsonArray("events");
-            pass = events != null && events.contains(event.getEvent());
+            pass = events.contains(event.getEvent());
         }
         return pass;
     }
