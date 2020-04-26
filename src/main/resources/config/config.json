@@ -1,5 +1,5 @@
 {
-  "database": {"host": "localhost","port": 5432,"database": "eventx","username": "postgres","password": "postgres"},
+  "database": {"host": "localhost","port": 5432,"database": "eventx","username": "eventx","password": "dsf*&sdnfd()sdf"},
   "serviceName": "com.geoideas.eventx",
   "address": "service:com.geoideas.eventx",
   "permissions": {
