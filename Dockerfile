@@ -1,6 +1,6 @@
-FROM openjdk:12-apline
-COPY ./target/eventx-0.10.jar /usr/app
-COPY ./application.json /usr/app/application.json
+FROM openjdk:12-alpine
 WORKDIR /usr/app
+COPY ./target/eventx-0.10.0.jar /usr/app
+COPY ./application.json /usr/app
 EXPOSE 30000
-CMD ["java", "-jar", "eventx-0.10.jar", "-conf", "application.json", "--cluster"]
+CMD ["java", "-jar", "eventx-0.10.0.jar", "-conf", "application.json", "--cluster"]

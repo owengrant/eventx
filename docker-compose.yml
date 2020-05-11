@@ -7,7 +7,6 @@ services:
       - ./postgres/schema.sh:/docker-entrypoint-initdb.d/eventx-schema.sh
     ports:
       - 5432:5432
-    
   eventx:
     build: .
     ports:
