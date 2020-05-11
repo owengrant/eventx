@@ -9,6 +9,6 @@ services:
       - 5432:5432
     
   eventx:
-    build: ./docker
+    build: .
     ports:
       - 30000:30000
