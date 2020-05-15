@@ -1,10 +1,48 @@
 {
-  "database": {"host": "localhost","port": 5432,"database": "eventx","username": "eventx","password": "dsf*&sdnfd()sdf"},
+  "database": {"host": "postgres","port": 5432,"database": "eventx","username": "eventx","password": "dsf*&sdnfd()sdf"},
   "serviceName": "com.geoideas.eventx",
   "address": "service:com.geoideas.eventx",
   "permissions": {
-        "com.geoideas.eventx.tester": {
-            "events": ["com.geoideas.eventx.tester:TEST"]
+        "org.mpi.hrds.core": {
+            "events": [
+                "org.mpi.hrds.core:BRIDGE-CREATED",
+                "org.mpi.hrds.core:BRIDGE-UPDATED",
+                "org.mpi.hrds.core:BRIDGE-DELETED",
+                "org.mpi.hrds.core:CULVERT-CREATED",
+                "org.mpi.hrds.core:CULVERT-UPDATED",
+                "org.mpi.hrds.core:CULVERT-DELETED",
+                "org.mpi.hrds.core:ROAD-CREATED",
+                "org.mpi.hrds.core:ROAD-UPDATED",
+                "org.mpi.hrds.core:ROAD-DELETED",
+                "org.mpi.hrds.core:NAMED_ROAD-CREATED",
+                "org.mpi.hrds.core:NAMED_ROAD-UPDATED",
+                "org.mpi.hrds.core:NAMED_ROAD-DELETED",
+                "org.mpi.hrds.core:CORRIDOR-CREATED",
+                "org.mpi.hrds.core:CORRIDOR-UPDATED",
+                "org.mpi.hrds.core:CORRIDOR-DELETED",
+                "org.mpi.hrds.core:SEGMENT-CREATED",
+                "org.mpi.hrds.core:SEGMENT-UPDATED",
+                "org.mpi.hrds.core:SEGMENT-DELETED",
+                "org.mpi.hrds.core:STOCKPILE-CREATED",
+                "org.mpi.hrds.core:STOCKPILE-UPDATED",
+                "org.mpi.hrds.core:STOCKPILE-DELETED"
+            ]
+        },
+        "geoideas-ip-api": {
+            "events": [
+                "geoideas-ip-api:ACCOUNT-CREATED",
+                "geoideas-ip-api:ACCOUNT-UPDATED",
+                "geoideas-ip-api:ACCOUNT-DELETED",
+                "geoideas-ip-api:SERVICE-CREATED",
+                "geoideas-ip-api:SERVICE-UPDATED",
+                "geoideas-ip-api:SERVICE-DELETED",
+                "geoideas-ip-api:SERVICE_OPERATION-CREATED",
+                "geoideas-ip-api:SERVICE_OPERATION-UPDATED",
+                "geoideas-ip-api:SERVICE_OPERATION-DELETED",
+                "geoideas-ip-api:ACCOUNT_PERMISSION-CREATED",
+                "geoideas-ip-api:ACCOUNT_PERMISSION-UPDATED",
+                "geoideas-ip-api:ACCOUNT_PERMISSION-DELETED"
+            ]
         }
   }
 }
